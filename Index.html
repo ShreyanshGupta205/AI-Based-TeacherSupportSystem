@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Teacher Support — College Project</title>
+  <style>
+    /* --- Basic Reset & Fonts --- */
+    * {box-sizing: border-box; margin: 0; padding: 0;}
+    body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f4f6fa; color:#1f2937; line-height:1.5;}
+    h1,h2,h3,h4 {color:#0f172a;}
+    a {text-decoration: none; color:#3b82f6;}
+
+    /* --- Header --- */
+    header {background: linear-gradient(90deg,#3b82f6,#9333ea); color:white; padding:18px 24px; display:flex; justify-content:space-between; align-items:center; border-radius:0 0 12px 12px;}
+    header .brand {font-weight:700; font-size:1.4rem;}
+    nav a {margin-left:18px; font-weight:600; transition:0.2s;}
+    nav a:hover {text-decoration:underline; color:#facc15;}
+
+    /* --- Container & Sections --- */
+    .container {max-width:1100px; margin:24px auto; padding:0 16px;}
+    section {background:white; border-radius:12px; padding:20px; margin-bottom:24px; box-shadow:0 6px 16px rgba(0,0,0,0.08);}
+    .section-title {margin-bottom:12px; border-bottom:2px solid #e0e7ff; padding-bottom:6px; font-weight:700; color:#3b82f6;}
+
+    /* --- Buttons --- */
+    .btn {background:#3b82f6; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.2s;}
+    .btn:hover {background:#2563eb;}
+    .btn.secondary {background:#f3f4f6; color:#1f2937; border:1px solid #d1d5db;}
+    .btn.secondary:hover {background:#e5e7eb;}
+
+    /* --- Inputs & Textareas --- */
+    input, select, textarea {width:100%; padding:10px; margin-top:6px; margin-bottom:12px; border-radius:8px; border:1px solid #cbd5e1; font-size:14px;}
+    textarea {min-height:90px; resize:vertical;}
+
+    /* --- Cards & Grids --- */
+    .grid {display:grid; gap:16px;}
+    .two-col {grid-template-columns:1fr 1fr;}
+    .output {background:#e0f2fe; padding:12px; border-radius:8px; min-height:100px; font-family:monospace; white-space:pre-wrap;}
+
+    /* --- Chatbot / Resources --- */
+    .chat-log {background:#f1f5f9; padding:12px; border-radius:8px; max-height:180px; overflow-y:auto; font-size:14px;}
+    .resource-item {background:#fef3c7; padding:10px; border-radius:8px; margin-bottom:6px; font-size:14px;}
+
+    /* --- Responsive --- */
+    @media(max-width:900px){.two-col{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">AI Teacher Support</div>
+  <nav>
+    <a href="#demo">Demo</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <!-- HERO -->
+  <section>
+    <h1 class="section-title">Welcome to AI Teacher Support</h1>
+    <p>College project: Automate lesson planning, quizzes, analytics, and student question support.</p>
+  </section>
+
+  <!-- DEMO -->
+  <section id="demo">
+    <h2 class="section-title">Live Demo</h2>
+    <div class="grid two-col">
+
+      <!-- Lesson Planner -->
+      <div>
+        <h3>Lesson Planner</h3>
+        <label>Topic</label>
+        <input id="lp-topic" type="text" value="Photosynthesis">
+        <label>Grade</label>
+        <select id="lp-grade"><option>Grade 6</option><option selected>Grade 8</option><option>High School</option></select>
+        <label>Duration (minutes)</label>
+        <input id="lp-duration" type="text" value="45">
+        <label>Focus</label>
+        <input id="lp-focus" type="text" value="Identify stomata, explain photosynthesis">
+        <button class="btn" onclick="generateLesson()">Generate Lesson</button>
+        <div id="lesson-output" class="output">Lesson plan appears here...</div>
+      </div>
+
+      <!-- Quiz Builder -->
+      <div>
+        <h3>Quiz Builder</h3>
+        <label>Topic</label>
+        <input id="q-topic" type="text" value="Photosynthesis">
+        <label>Number of Questions</label>
+        <select id="q-count"><option>3</option><option selected>5</option></select>
+        <label>Difficulty</label>
+        <select id="q-diff"><option>Easy</option><option selected>Medium</option><option>Hard</option></select>
+        <button class="btn" onclick="generateQuiz()">Generate Quiz</button>
+        <button class="btn secondary" onclick="gradeSampleAnswers()">Auto-Grade</button>
+        <div id="quiz-output" class="output">Quiz appears here...</div>
+      </div>
+
+    </div>
+
+    <!-- Chatbot + Resources -->
+    <div class="grid two-col" style="margin-top:16px;">
+      <!-- Chatbot -->
+      <div>
+        <h3>Doubt Assistant</h3>
+        <input id="chat-input" type="text" value="What are stomata?">
+        <button class="btn" onclick="chatAsk()">Ask</button>
+        <button class="btn secondary" onclick="summarizeDoubts()">Teacher Summary</button>
+        <div id="chat-output" class="chat-log">Chat responses appear here...</div>
+      </div>
+
+      <!-- Resource Hub -->
+      <div>
+        <h3>Resource Hub</h3>
+        <input id="res-title" type="text" placeholder="Resource title">
+        <input id="res-tags" type="text" placeholder="Tags comma separated">
+        <button class="btn" onclick="addResource()">Add Resource</button>
+        <button class="btn secondary" onclick="suggestResources()">Suggest Resources</button>
+        <div id="res-list"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard">
+    <h2 class="section-title">Dashboard</h2>
+    <div class="grid two-col">
+      <div>
+        <h4>Class Performance</h4>
+        <div class="output">(Chart Placeholder)</div>
+      </div>
+      <div>
+        <h4>Top Concerns</h4>
+        <ul>
+          <li>Photosynthesis — 40% students low mastery</li>
+          <li>Fractions — 18% need intervention</li>
+          <li>Attendance: 92%</li>
+        </ul>
+      </div>
+    </div>
+    <button class="btn" onclick="downloadCSV()">Export CSV</button>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2 class="section-title">Contact</h2>
+    <p>For demo or collaboration, reach out to your team.</p>
+  </section>
+
+</div>
+
+<script>
+  // --- Lesson Planner ---
+  function generateLesson(){
+    const topic=document.getElementById('lp-topic').value;
+    const grade=document.getElementById('lp-grade').value;
+    const duration=document.getElementById('lp-duration').value;
+    const focus=document.getElementById('lp-focus').value;
+    document.getElementById('lesson-output').innerText=
+      `Lesson Plan: ${topic}\nGrade: ${grade}\nDuration: ${duration} mins\nFocus: ${focus}\n- Intro\n- Teach\n- Activity\n- Assessment\n- Recap`;
+  }
+
+  // --- Quiz Builder ---
+  let lastQuiz=[];
+  function generateQuiz(){
+    const topic=document.getElementById('q-topic').value;
+    const count=parseInt(document.getElementById('q-count').value);
+    lastQuiz=[];
+    let output='';
+    for(let i=1;i<=count;i++){
+      output+=`${i}. ${topic} question ${i}\nA. Option 1\nB. Option 2\nC. Option 3\n\n`;
+      lastQuiz.push({answer:1});
+    }
+    document.getElementById('quiz-output').innerText=output;
+  }
+  function gradeSampleAnswers(){
+    const score=Math.round(lastQuiz.length? 100:0);
+    document.getElementById('quiz-output').innerText += `\nSample Score: ${score}%`;
+  }
+
+  // --- Chatbot ---
+  let doubts=[];
+  function chatAsk(){
+    const q=document.getElementById('chat-input').value;
+    let ans='Good question! '+q;
+    if(q.toLowerCase().includes('stomata')) ans='Stomata are tiny pores on leaves for gas exchange.';
+    doubts.push({q,ans});
+    renderChat();
+  }
+  function summarizeDoubts(){
+    document.getElementById('chat-output').innerText=`Total doubts: ${doubts.length}`;
+  }
+  function renderChat(){
+    const el=document.getElementById('chat-output');
+    el.innerHTML=doubts.map(d=>`Q: ${d.q}\nA: ${d.ans}`).join('\n\n');
+  }
+
+  // --- Resource Hub ---
+  const resources=[];
+  function addResource(){
+    const title=document.getElementById('res-title').value;
+    const tags=document.getElementById('res-tags').value.split(',').map(t=>t.trim());
+    resources.push({title,tags});
+    renderResources();
+  }
+  function renderResources(){
+    const el=document.getElementById('res-list');
+    el.innerHTML=resources.map((r,i)=>`<div class="resource-item">${i+1}. ${r.title} [${r.tags.join(', ')}]</div>`).join('');
+  }
+  function suggestResources(){
+    const topic=prompt('Enter topic to suggest resources:','Photosynthesis');
+    const matches=resources.filter(r=>r.tags.some(t=>topic.toLowerCase().includes(t.toLowerCase())));
+    alert(matches.length ? 'Suggested: '+matches.map(m=>m.title).join(', ') : 'No matches found');
+  }
+
+  // --- CSV Export ---
+  function downloadCSV(){
+    const rows=[['Student','Topic','Score'],['Aman','Photosynthesis','62'],['Priya','Photosynthesis','45']];
+    const csv=rows.map(r=>r.join(',')).join('\n');
+    const blob=new Blob([csv],{type:'text/csv'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='report.csv';a.click();
+  }
+</script>
+
+</body>
+</html>
